@@ -1,0 +1,21 @@
+{
+    "version": "1.0.0",
+    "compilerOptions": {
+    "target": "es2017",
+    "lib": ["es2017", "dom"],
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "noLib": false,
+    "preserveConstEnums": true,
+    "declaration": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "outDir": "./dist",
+    "typeRoots": ["./config", "./node_modules/@types"],
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+    },
+    "exclude": ["./node_modules", "./dist", "./tests"]
+   }

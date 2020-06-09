@@ -1,0 +1,17 @@
+{
+  "name": "labeling_algo",
+  "version": "1.0.0",
+  "description": "Labeling_Algo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tyler Edwards",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^14.0.6",
+    "csv-parser": "^2.3.2",
+    "js-levenshtein": "^1.1.6",
+    "typescript": "^3.9.3"
+  }
+}
