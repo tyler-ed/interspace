@@ -50,13 +50,11 @@ fs.createReadStream('train.csv')
         overall_score[value] += results.length - index;
     });
     let overall_rank = argsort(overall_score).reverse();
-    console.log(overall_score);
-    console.log("Guesses:");
+    console.log("\n", "Guesses:");
     for (let i = 0; i < 5; i++) {
         console.log(i + " _ Manufacturer: " + results[overall_rank[i]][key[0]] + ", Model: " + results[overall_rank[i]][key[1]]);
     }
-    console.log("");
-    console.log("Actual: ");
-    console.log("Manufacturer: " + man_test + ", Model: " + mod_test);
+    console.log("\n", "Actual: ");
+    console.log("Manufacturer: " + man_test + ", Model: " + mod_test, "\n");
 });
 //# sourceMappingURL=index.js.map
