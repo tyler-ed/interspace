@@ -29,8 +29,8 @@ function get_dists(test, res, index) {
     res.forEach(element => dist.push(string_comparison(test, element[index])));
     return dist;
 }
-const man_test = "Olympus";
-const mod_test = "Gif";
+const man_test = "Beck Coulter";
+const mod_test = "Act5";
 fs.createReadStream('train.csv')
     .pipe(csv())
     .on('data', (data) => {

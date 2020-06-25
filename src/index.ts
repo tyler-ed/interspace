@@ -11,7 +11,7 @@ function argsort(clickCount: number[]){
     .map((item, index) => [item, index]) // add the clickCount to sort by
     .sort(([count1], [count2]) => count2 - count1) // sort by the clickCount data
     .map(([, item]) => item); // extract the sorted items
-    //.map((item) => clickCount.length-item)
+
     return sort_this;
 }
 
@@ -39,8 +39,8 @@ function get_dists(test: string, res: number[], index: string): number[]{
 }
 
 // EDIT THIS
-const man_test = "Olympus"
-const mod_test = "Gif"
+const man_test = "Beck Coulter"
+const mod_test = "Act5"
 ///////
 
 fs.createReadStream('train.csv')
