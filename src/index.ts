@@ -43,7 +43,7 @@ const man_test = "Beck Coulter"
 const mod_test = "Act5"
 ///////
 
-fs.createReadStream('train.csv')
+fs.createReadStream('../train.csv')
   .pipe(csv())
   .on('data', (data) => {
       results.push(data)})
