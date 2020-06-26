@@ -8,13 +8,13 @@ Interspace takes input strings for n number of parameters and compares those n s
 
 For example: \
 Input: \
- Parameter 1: "Philly" Parameter 2: "Penn" 
+ Parameter 1: "Philly"          Parameter 2: "Penn" 
 
 Set of Labels:\
   ... \
-  Parameter 1: "Cincinnati" Parameter 2: "Ohio" \
-  Parameter 1: "Denver" Parameter 2: "Colorado" \
-  Parameter 1: "Philadelphia" Parameter 2: "Pennsylvania" \
+  Parameter 1: "Cincinnati"     Parameter 2: "Ohio" \
+  Parameter 1: "Denver"         Parameter 2: "Colorado" \
+  Parameter 1: "Philadelphia"   Parameter 2: "Pennsylvania" \
   ... 
  
 Output: \
