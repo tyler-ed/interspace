@@ -31,7 +31,7 @@ Output:
 
 Within interspace, there are three areas of customization. 
 
-1 - input your own ground truth labels as a csv file ( as an example you can change the example set of labels above to be whatever you would like) \ 
-2 - change the inputted parameters ( you can change add a parameter, for example zip code. Or remove parameters too) \ 
-3 - adjust the relative weighting of each parameter ( assign parameters higher or lower weightings in the scoring algorithm) 
+1 - input your own ground truth labels as a csv file ( as an example you can change the example set of labels above to be whatever you would like).  
+2 - change the inputted parameters ( you can change add a parameter, for example zip code. Or remove parameters too). 
+3 - adjust the relative weighting of each parameter ( assign parameters higher or lower weightings in the scoring algorithm).  
 
