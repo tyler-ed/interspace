@@ -1,10 +1,10 @@
 # interspace
 
-interpsace is a Typescript algorithm that predictively matches input strings to an intended input within a set of labels.
+Interpsace is a Typescript algorithm that predictively matches input strings to an intended input within a set of labels.
 
-# design
+# Design
 
-interspace takes input strings for n number of parameters and compares those n strings against a given set of ground truth labels that have those parameters. The result of this comparison are predictive matches between the inputs and labels. The best scoring matches are displayed. 
+Interspace takes input strings for n number of parameters and compares those n strings against a given set of ground truth labels that have those parameters. The result of this comparison are predictive matches between the inputs and labels. The best scoring matches are displayed. 
 
 For example: \
 Input: \
@@ -24,11 +24,11 @@ Output: \
     3 - Phoenix, Arizona \
     ... 
 
-# usage and configuration
+# Usage and configuration
 
 Within interspace, there are three areas of customization. 
 
-1 - input your own ground truth labels as a csv file ( as an example you can change the example set of labels above to be whatever you would like) \
-2 - change the inputted parameters ( you can change add a parameter, for example zip code. Or remove parameters too) \
-3 - adjust the relative weighting of each parameter ( if parameter 1 is more important than parameter 2, assign it a higher weighting in the scoring algorithm) 
+1 - input your own ground truth labels as a csv file ( as an example you can change the example set of labels above to be whatever you would like) \ 
+2 - change the inputted parameters ( you can change add a parameter, for example zip code. Or remove parameters too) \ 
+3 - adjust the relative weighting of each parameter ( assign parameters higher or lower weightings in the scoring algorithm) 
 
