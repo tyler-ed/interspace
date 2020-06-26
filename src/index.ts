@@ -4,8 +4,6 @@ const levenshtein = require('js-levenshtein');
 var results = [];
 
 
-
-
 function argsort(clickCount: number[]){
     const sort_this = clickCount
     .map((item, index) => [item, index]) // add the clickCount to sort by
@@ -24,7 +22,7 @@ function string_comparison(s1, s2): number{
         var min_weight = 1000;
         for(var b=0; b<words2.length; b++){
             if(words2[b].length>0){
-                min_weight = Math.min(min_weight, levenshtein(words1[a], words2[b])-Math.max(words2[b].length-words1[a].length, 0));
+                min_weight = Math.min(min_weight, levenshtein(words1[a], words2[b])-.9*Math.max(words2[b].length-words1[a].length, 0));
             }      
         }
         sum_weights += min_weight;
@@ -38,9 +36,24 @@ function get_dists(test: string, res: number[], index: string): number[]{
     return dist
 }
 
+function get_probs(weights: number[]){
+    let sum = 0;
+    let probs = [];
+    let maximum = weights.reduce((a, b) => {
+        return Math.max(a,b)
+    })
+    weights.forEach((item) => {sum += Math.exp(-item*item)});
+    weights.forEach((item) => {
+        let p = Math.exp(-item*item)/sum
+        probs.push(p)
+    })
+
+    return probs
+}
+
 // EDIT THIS
-const man_test = "Beck Coulter"
-const mod_test = "Jolly"
+const man_test = "Minder"
+const mod_test = "223s"
 ///////
 
 fs.createReadStream('train.csv')
@@ -51,25 +64,24 @@ fs.createReadStream('train.csv')
     let key = Object.keys(results[0]);
 
     let man_d = get_dists(man_test, results, key[0]);
-    let mon_d = get_dists(mod_test, results, key[1]);
-
-    let man_sorted = argsort(man_d);
-    let mod_sorted = argsort(mon_d);
+    let mod_d = get_dists(mod_test, results, key[1]);
+    let man_probs = get_probs(man_d)
+    let mod_probs = get_probs(mod_d)
     let overall_score = Array(results.length);
-
-    man_sorted.forEach((value, index)=>{
-        overall_score[value] = results.length - index;
+    man_probs.forEach((value, index)=>{
+        overall_score[index] = value;
     })
-    mod_sorted.forEach((value, index)=>{
-        overall_score[value] += results.length - index;
+    mod_probs.forEach((value, index)=>{
+        overall_score[index] *= value;
     })
-
-    let overall_rank = argsort(overall_score).reverse();
-    //console.log(overall_score);
-
+    let overall_sum = overall_score.reduce((a, b) => {
+        return a+b;
+    })
+    let overall_rank = argsort(overall_score);
+    
     console.log("\n", "Guesses:");
     for(let i = 0; i<5; i++){
-        console.log(i+" _ Manufacturer: " + results[overall_rank[i]][key[0]] + ", Model: " + results[overall_rank[i]][key[1]])
+        console.log(Math.round(100*overall_score[overall_rank[i]]/overall_sum)+"% _ Manufacturer: " + results[overall_rank[i]][key[0]] + ", Model: " + results[overall_rank[i]][key[1]])
     }
     console.log("\n", "Actual: ");
     console.log("Manufacturer: " + man_test + ", Model: " + mod_test, "\n")
