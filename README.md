@@ -5,8 +5,9 @@ Interpsace is a Typescript algorithm that predictively matches input strings to 
 # Design
 
 Interspace takes input strings for n number of parameters and compares those n strings against a given set of ground truth labels that have those parameters. The result of this comparison are predictive matches between the inputs and labels. The best scoring matches are displayed. 
-<pre>
+
 For example: 
+<pre>
 Input: 
  Parameter 1: "Philly"          Parameter 2: "Penn" 
 
@@ -16,13 +17,14 @@ Set of Labels:
   Parameter 1: "Denver"         Parameter 2: "Colorado" 
   Parameter 1: "Philadelphia"   Parameter 2: "Pennsylvania" 
   ... 
-</pre>
-Output: \
-  Guess: \
-    1 - Philadelphia, Pennsylvania \
-    2 - Scranton, Pennsylvania \
-    3 - Phoenix, Arizona \
+
+Output: 
+  Guess: 
+    1 - Philadelphia, Pennsylvania 
+    2 - Scranton, Pennsylvania 
+    3 - Phoenix, Arizona 
     ... 
+</pre>
 
 # Usage and configuration
 
