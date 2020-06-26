@@ -24,6 +24,7 @@ Output:
     2 - Scranton, Pennsylvania 
     3 - Phoenix, Arizona 
     ... 
+    
 </pre>
 
 # Usage and configuration
