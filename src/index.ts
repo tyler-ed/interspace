@@ -40,10 +40,10 @@ function get_dists(test: string, res: number[], index: string): number[]{
 
 // EDIT THIS
 const man_test = "Beck Coulter"
-const mod_test = "Act5"
+const mod_test = "Jolly"
 ///////
 
-fs.createReadStream('../train.csv')
+fs.createReadStream('train.csv')
   .pipe(csv())
   .on('data', (data) => {
       results.push(data)})
