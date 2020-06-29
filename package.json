@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^14.0.6",
-    "csv-parser": "^2.3.2",
+    "glob": "^7.1.6",
     "js-levenshtein": "^1.1.6",
     "typescript": "^3.9.3"
   }

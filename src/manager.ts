@@ -5,8 +5,8 @@ const glob = require('glob');
 let match_manager = new (class {
     scraped:boolean = false
     labels:string[][]
-    keys:string[]
-    params:Parameter[]
+    keys:string[] = []
+    params:Parameter[] = []
 
     last_input:string[]
     matching_results:number[][]
@@ -97,26 +97,32 @@ let match_manager = new (class {
         return scaled_sort;
     }
     scrape(): string[][]{
-        const path_to_csv = this.get_csv_path();
+        const path_to_csv:string  = this.get_csv_path();
         let results:string[][]
-        fs.createReadStream(path_to_csv)
-            .pipe(csv())
-            .on('data', (data) => {
-            results.push(data)})
-            .on('end', () => {
+        console.log(path_to_csv)
+
+
+        var stream = fs.createReadStream(path_to_csv);
+    
+        stream.pipe(csv({seperator: '\t'}))
+        .on('data', (data) => {
+            console.log("Pushing");
+            results.push(data)
+            
+        }).on('end', () => {
                 this.scraped = true;
                 return results;
-            });
+         });
+
         throw new Error("Scrape unable to complete");
     }
     get_csv_path(): string{
-        const path_to_csv: string[] = glob("*.csv", {}, (err, files)=>{
-            console.log(files);
-        })
-        if(path_to_csv.length>1){
-            throw new Error("Multiple csv files detected");
-        }
+
+        let path_to_csv = glob.sync('../*.csv');
         if(path_to_csv){
+            if(path_to_csv.length>1){
+                throw new Error("Multiple csv files detected");
+            }
             return path_to_csv[0];
         }
         throw new Error("No csv file detected");
