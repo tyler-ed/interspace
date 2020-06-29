@@ -1,88 +1,31 @@
-const csv = require('csv-parser');
-const fs = require('fs');
-const levenshtein = require('js-levenshtein');
-var results = [];
+/*
+To Do:
+Split tasks into different files
+Create real index file
+Test and Troubleshoot algorithm
 
-
-function argsort(clickCount: number[]){
-    const sort_this = clickCount
-    .map((item, index) => [item, index]) // add the clickCount to sort by
-    .sort(([count1], [count2]) => count2 - count1) // sort by the clickCount data
-    .map(([, item]) => item); // extract the sorted items
-
-    return sort_this;
-}
-
-function string_comparison(s1, s2): number{
-    const words1 = s1.toLowerCase().split(' ').join(',').split('-').join(',').split('_').join(',').split(','); //Test Case
-    const words2 = s2.toLowerCase().split(' ').join(',').split('-').join(',').split('_').join(',').split(','); //Label
-    let sum_weights = 0;
-
-    for(var a=0; a<words1.length; a++){
-        var min_weight = 1000;
-        for(var b=0; b<words2.length; b++){
-            if(words2[b].length>0){
-                min_weight = Math.min(min_weight, levenshtein(words1[a], words2[b])-.9*Math.max(words2[b].length-words1[a].length, 0));
-            }      
-        }
-        sum_weights += min_weight;
-    }
-    return sum_weights;
-}
-
-function get_dists(test: string, res: number[], index: string): number[]{
-    const dist = [];
-    res.forEach(element => dist.push(string_comparison(test, element[index])));
-    return dist
-}
-
-function get_probs(weights: number[]){
-    let sum = 0;
-    let probs = [];
-    let maximum = weights.reduce((a, b) => {
-        return Math.max(a,b)
-    })
-    weights.forEach((item) => {sum += Math.exp(-item*item)});
-    weights.forEach((item) => {
-        let p = Math.exp(-item*item)/sum
-        probs.push(p)
-    })
-
-    return probs
-}
-
+build onto electron
+*/
 // EDIT THIS
-const man_test = "Minder"
-const mod_test = "223s"
+const man_test = "GE"
+const mod_test = "LS"
 ///////
 
-fs.createReadStream('train.csv')
-  .pipe(csv())
-  .on('data', (data) => {
-      results.push(data)})
-  .on('end', () => {
-    let key = Object.keys(results[0]);
+import {match_manager, Parameter} from "./manager";
 
-    let man_d = get_dists(man_test, results, key[0]);
-    let mod_d = get_dists(mod_test, results, key[1]);
-    let man_probs = get_probs(man_d)
-    let mod_probs = get_probs(mod_d)
-    let overall_score = Array(results.length);
-    man_probs.forEach((value, index)=>{
-        overall_score[index] = value;
-    })
-    mod_probs.forEach((value, index)=>{
-        overall_score[index] *= value;
-    })
-    let overall_sum = overall_score.reduce((a, b) => {
-        return a+b;
-    })
-    let overall_rank = argsort(overall_score);
-    
-    console.log("\n", "Guesses:");
-    for(let i = 0; i<5; i++){
-        console.log(Math.round(100*overall_score[overall_rank[i]]/overall_sum)+"% _ Manufacturer: " + results[overall_rank[i]][key[0]] + ", Model: " + results[overall_rank[i]][key[1]])
-    }
-    console.log("\n", "Actual: ");
-    console.log("Manufacturer: " + man_test + ", Model: " + mod_test, "\n")
-});
+function main() {
+  match_manager.params.push(new Parameter("manufacturer", 1, 0, 0))
+  match_manager.params.push(new Parameter("model", 1, 1, 1))
+  match_manager.process_guess(man_test, mod_test);
+}
+
+main();
+
+
+
+
+
+
+
+
+
