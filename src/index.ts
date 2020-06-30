@@ -13,13 +13,16 @@ const mod_test = "LS"
 
 import {match_manager, Parameter} from "./manager";
 
-function main() {
+async function main() {
   match_manager.params.push(new Parameter("manufacturer", 1, 0, 0))
   match_manager.params.push(new Parameter("model", 1, 1, 1))
-  match_manager.process_guess(man_test, mod_test);
+  await match_manager.process_guess(man_test, mod_test);
 }
 
-main();
+main().then(() =>{
+    console.log('all done');
+});
+
 
 
 

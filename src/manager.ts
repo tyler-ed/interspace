@@ -1,6 +1,7 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const glob = require('glob');
+import {get_dists, argsort} from "./distance"
 
 let match_manager = new (class {
     scraped:boolean = false
@@ -23,11 +24,22 @@ let match_manager = new (class {
         }
     }
 
-    process_guess(...inputs:string[]): void{
+    async process_guess(...inputs:string[]): Promise<void> {
+
+
         if(!this.scraped){
-            this.labels = this.scrape();
+            this.labels = await this.scrape();
             //this.keys = Object.keys(this.labels);
         }
+        console.log("\n");
+        console.log("\n");
+        console.log(this.labels[1]["manufacturer"])
+        console.log("\n");
+        console.log("\n");
+
+
+
+        throw new Error('No csv file detected');
         let input_distances:number[][] 
         let label_probabilities:number[][]
         this.params.forEach((item, index) => {
@@ -39,27 +51,28 @@ let match_manager = new (class {
         this.matching_results = polished_probabilities;
         this.last_input = inputs;
         this.log_results();
+
     }
 
     log_results():void{
-        console.log("\n", "Guesses:");
+        console.log('\n', 'Guesses:');
         for(let i = 0; i<this.display_num; i++){
-            let log_string:string = "";
-            log_string += Math.round(100*this.matching_results[i][1])+"% - ";
+            let log_string:string = '';
+            log_string += Math.round(100*this.matching_results[i][1])+'% - ';
             this.params.forEach((item, index) => {
-                log_string += item.name+": "+this.labels[this.matching_results[i][0]][item.name];
+                log_string += item.name+': '+this.labels[this.matching_results[i][0]][item.name];
                 if(index<this.params.length-1){
-                    log_string += ", ";
+                    log_string += ', ';
                 }
             }); 
             console.log(log_string);
         }
-        console.log("\n", "Actual: ");
-        let log_string = "";
+        console.log('\n', 'Actual: ');
+        let log_string = '';
         this.params.forEach((item, index) => {
-            log_string += item.name+": "+this.last_input[item.guess_collumn];
+            log_string += item.name+': '+this.last_input[item.guess_collumn];
             if(index<this.params.length-1){
-                log_string += ", ";
+                log_string += ', ';
             }
         });
         console.log(log_string);
@@ -96,36 +109,33 @@ let match_manager = new (class {
         }
         return scaled_sort;
     }
-    scrape(): string[][]{
-        const path_to_csv:string  = this.get_csv_path();
-        let results:string[][]
-        console.log(path_to_csv)
+    scrape(): Promise<string[][]>{
+        return new Promise<string[][]>((resolve, reject) => {
+            const path_to_csv:string  = this.get_csv_path();
+            let results:string[][] = []
 
-
-        var stream = fs.createReadStream(path_to_csv);
+            var stream = fs.createReadStream(path_to_csv);
     
-        stream.pipe(csv({seperator: '\t'}))
-        .on('data', (data) => {
-            console.log("Pushing");
-            results.push(data)
-            
-        }).on('end', () => {
+            stream.pipe(csv())
+            .on('data', (data) => {
+            results.push(data)    
+            }).on('end', () => {
                 this.scraped = true;
-                return results;
-         });
-
-        throw new Error("Scrape unable to complete");
+                resolve(results);
+            }).on('error', () => {
+                reject('Failed to read csv file')
+            });
+        });
     }
     get_csv_path(): string{
-
         let path_to_csv = glob.sync('../*.csv');
         if(path_to_csv){
             if(path_to_csv.length>1){
-                throw new Error("Multiple csv files detected");
+                throw new Error('Multiple csv files detected');
             }
             return path_to_csv[0];
         }
-        throw new Error("No csv file detected");
+        throw new Error('No csv file detected');
     }   
 });
 

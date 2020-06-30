@@ -31,3 +31,5 @@ function get_dists(test: string, res: string[][], index: string): number[]{
     res.forEach(element => dist.push(string_comparison(test, element[index])));
     return dist
 }
+
+export {get_dists, argsort}
