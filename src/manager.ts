@@ -32,23 +32,13 @@ let match_manager = new (class {
             //this.keys = Object.keys(this.labels);
         }
 
-        // HERE IS WHERE I AM TROUBLESHOOTING AT THE MOMENT
-        
-        console.log("\n");
-        console.log("\n");
-        console.log(this.labels[1]["manufacturer"])
-        console.log("\n");
-        console.log("\n");
 
-        throw new Error('DEBUG BREAK');
-
-
-        let input_distances:number[][] 
-        let label_probabilities:number[][]
+        let input_distances:number[][] = []
+        let label_probabilities:number[][] = []
         this.params.forEach((item, index) => {
             let transfer:number[] = get_dists(inputs[item.guess_collumn], this.labels, item.name)
             input_distances.push(transfer)
-            label_probabilities.push(this.get_probabilities(transfer))
+            label_probabilities.push(this.get_probabilities(transfer, item.weighting))
         })
         let polished_probabilities = this.polish_probabilities(label_probabilities);
         this.matching_results = polished_probabilities;
@@ -80,21 +70,21 @@ let match_manager = new (class {
         });
         console.log(log_string);
     }
-    get_probabilities(weights: number[]):number[]{
+    get_probabilities(weights:number[], parameter_weighting:number):number[]{
         let sum = 0;
         let probs = [];
         let maximum = weights.reduce((a, b) => {
             return Math.max(a,b)
         })
-        weights.forEach((item) => {sum += Math.exp(-(item**2))});
+        weights.forEach((item) => {sum += Math.exp(-parameter_weighting*(item**2))});
         weights.forEach((item) => {
-            let p = Math.exp(-(item**2))/sum
+            let p = Math.exp(-parameter_weighting*(item**2))/sum
             probs.push(p)
         })
         return probs
     }
     polish_probabilities(label_probabilities:number[][]):number[][]{
-        let aggregate_probabilities:number[];
+        let aggregate_probabilities:number[] = Array(label_probabilities[0].length);
         for(let i:number = 0; i<this.labels.length; i++){
             aggregate_probabilities[i]=1;
             label_probabilities.forEach((item, index) => {
@@ -106,7 +96,7 @@ let match_manager = new (class {
         for(let i:number = 0; i<this.worthy_size; i++){
             prob_sum += aggregate_probabilities[argsorted_by_probs[i]];        
         }
-        let scaled_sort:number[][];
+        let scaled_sort:number[][] = [];
         for(let i:number = 0; i<this.worthy_size; i++){
             scaled_sort.push([argsorted_by_probs[i], aggregate_probabilities[argsorted_by_probs[i]]/prob_sum]);     
         }
