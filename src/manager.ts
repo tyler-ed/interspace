@@ -4,7 +4,7 @@ const glob = require('glob');
 import {get_dists, argsort} from "./distance"
 
 let match_manager = new (class {
-    scraped:boolean = false
+    initiated:boolean = false
     labels:string[][]
     keys:string[] = []
     params:Parameter[] = []
@@ -27,13 +27,14 @@ let match_manager = new (class {
         }
     }
 
-    init():void{
+    async init():Promise<void> {
+        this.labels = await this.scrape();
         this.normalize_parameter_weights();
     }
 
     async process_guess(...inputs:string[]):Promise<void> {
-        if(!this.scraped){
-            this.labels = await this.scrape();
+        if(!this.initiated){
+            await this.init();    
         }
         let input_distances:number[][] = []
         let label_probabilities:number[][] = []
