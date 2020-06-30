@@ -7,15 +7,16 @@ Test and Troubleshoot algorithm
 build onto electron
 */
 // EDIT THIS
-const man_test = "Respi"
+const man_test = "olympus"
 const mod_test = "v60"
 ///////
 
 import {match_manager, Parameter} from "./manager";
 
 async function main() {
-  match_manager.params.push(new Parameter("manufacturer", 2, 0, 0))
-  match_manager.params.push(new Parameter("model", 1, 1, 1))
+  match_manager.params.push(new Parameter("manufacturer", 4))
+  match_manager.params.push(new Parameter("model", 2))
+  match_manager.init();
   await match_manager.process_guess(man_test, mod_test);
 }
 

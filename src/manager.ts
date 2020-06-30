@@ -13,18 +13,23 @@ let match_manager = new (class {
     matching_results:number[][]
 
     //settings
+    auto_choice:boolean = false
+    auto_threshold:number = .5
     adaptive_listing:boolean = false
-    adaptive_threshold = .2
+    adaptive_threshold:number = .2
     display_num:number = 5
     worthy_size:number = 12
+    softmax_beta:number = 3
     
     constructor() {
         if(this.display_num+1>this.worthy_size){
             this.worthy_size = this.display_num+1;
         }
     }
-
-    async process_guess(...inputs:string[]): Promise<void> {
+    init():void{
+        this.normalize_parameter_weights();
+    }
+    async process_guess(...inputs:string[]):Promise<void> {
 
 
         if(!this.scraped){
@@ -68,7 +73,7 @@ let match_manager = new (class {
                 log_string += ', ';
             }
         });
-        console.log(log_string);
+        console.log(log_string, "\n");
     }
     get_probabilities(weights:number[], parameter_weighting:number):number[]{
         let sum = 0;
@@ -76,9 +81,9 @@ let match_manager = new (class {
         let maximum = weights.reduce((a, b) => {
             return Math.max(a,b)
         })
-        weights.forEach((item) => {sum += Math.exp(-parameter_weighting*(item**2))});
+        weights.forEach((item) => {sum += Math.exp(-parameter_weighting*this.softmax_beta*(item**1))});
         weights.forEach((item) => {
-            let p = Math.exp(-parameter_weighting*(item**2))/sum
+            let p = Math.exp(-parameter_weighting*this.softmax_beta*(item**1))/sum
             probs.push(p)
         })
         return probs
@@ -130,21 +135,30 @@ let match_manager = new (class {
         }
         throw new Error('No csv file detected');
     }   
+    normalize_parameter_weights():void{
+        let sum:number = 0;
+        this.params.forEach((item) => {
+            sum += item.weighting;
+        });
+        sum /= this.params.length;
+        this.params.forEach((item) => {
+            item.weighting /= sum;
+        });
+    }
 });
 
 class Parameter {
     name:string
     weighting:number
-    label_collumn:number
     guess_collumn:number
-    constructor(name:string = "none", weighting:number = 1, label_collumn:number, guess_collumn:number=null) {
-        this.name = name
-        this.weighting = weighting
-        this.label_collumn = label_collumn
+    constructor(name:string = "none", weighting:number = 1, guess_collumn:number=null) {
+        this.name = name;
+        this.weighting = weighting;
+
         if(guess_collumn){
-            this.guess_collumn = guess_collumn
+            this.guess_collumn = guess_collumn;
         }else{
-            this.guess_collumn = label_collumn
+            this.guess_collumn = match_manager.params.length;
         }
     }
 }
