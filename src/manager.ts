@@ -27,11 +27,6 @@ let match_manager = new (class {
         }
     }
 
-    async init():Promise<void> {
-        this.labels = await this.scrape();
-        this.normalize_parameter_weights();
-    }
-
     async process_guess(...inputs:string[]):Promise<void> {
         if(!this.initiated){
             await this.init();    
@@ -49,6 +44,12 @@ let match_manager = new (class {
         this.log_results();
     }
 
+    async init():Promise<void> {
+        this.labels = await this.scrape();
+        this.normalize_parameter_weights();
+        this.initiated = true;
+    }
+    
     log_results():void{
         console.log('\n', 'Guesses:');
         for(let i:number = 0; i<this.display_num; i++){
@@ -133,7 +134,6 @@ let match_manager = new (class {
             .on('data', (data) => {
             results.push(data)    
             }).on('end', () => {
-                this.scraped = true;
                 resolve(results);
             }).on('error', () => {
                 reject('Failed to read csv file')
