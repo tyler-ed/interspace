@@ -31,15 +31,18 @@ let match_manager = new (class {
             this.labels = await this.scrape();
             //this.keys = Object.keys(this.labels);
         }
+
+        // HERE IS WHERE I AM TROUBLESHOOTING AT THE MOMENT
+        
         console.log("\n");
         console.log("\n");
         console.log(this.labels[1]["manufacturer"])
         console.log("\n");
         console.log("\n");
 
+        throw new Error('DEBUG BREAK');
 
 
-        throw new Error('No csv file detected');
         let input_distances:number[][] 
         let label_probabilities:number[][]
         this.params.forEach((item, index) => {
