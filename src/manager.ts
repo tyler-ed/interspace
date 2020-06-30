@@ -13,9 +13,9 @@ let match_manager = new (class {
     matching_results:number[][]
 
     //settings
-    auto_choice:boolean = false
+    auto_choice:boolean = true
     auto_threshold:number = .5
-    adaptive_listing:boolean = false
+    adaptive_listing:boolean = true
     adaptive_threshold:number = .2
     display_num:number = 5
     worthy_size:number = 12
@@ -26,18 +26,15 @@ let match_manager = new (class {
             this.worthy_size = this.display_num+1;
         }
     }
+
     init():void{
         this.normalize_parameter_weights();
     }
+
     async process_guess(...inputs:string[]):Promise<void> {
-
-
         if(!this.scraped){
             this.labels = await this.scrape();
-            //this.keys = Object.keys(this.labels);
         }
-
-
         let input_distances:number[][] = []
         let label_probabilities:number[][] = []
         this.params.forEach((item, index) => {
@@ -49,21 +46,26 @@ let match_manager = new (class {
         this.matching_results = polished_probabilities;
         this.last_input = inputs;
         this.log_results();
-
     }
 
     log_results():void{
         console.log('\n', 'Guesses:');
-        for(let i = 0; i<this.display_num; i++){
-            let log_string:string = '';
-            log_string += Math.round(100*this.matching_results[i][1])+'% - ';
-            this.params.forEach((item, index) => {
+        for(let i:number = 0; i<this.display_num; i++){
+            let probability:number = this.matching_results[i][1];
+            if((this.adaptive_listing&&probability>=this.adaptive_threshold)||!this.adaptive_listing){
+                let log_string:string = '';
+                log_string += Math.round(100*probability)+'% - ';
+                this.params.forEach((item, index) => {
                 log_string += item.name+': '+this.labels[this.matching_results[i][0]][item.name];
                 if(index<this.params.length-1){
                     log_string += ', ';
                 }
-            }); 
-            console.log(log_string);
+                }); 
+                if(i==0&&this.auto_choice&&this.make_choice(this.matching_results)){
+                    log_string += "  < Confident Match"
+                }
+                console.log(log_string);
+            }
         }
         console.log('\n', 'Actual: ');
         let log_string = '';
@@ -75,6 +77,7 @@ let match_manager = new (class {
         });
         console.log(log_string, "\n");
     }
+    
     get_probabilities(weights:number[], parameter_weighting:number):number[]{
         let sum = 0;
         let probs = [];
@@ -88,6 +91,7 @@ let match_manager = new (class {
         })
         return probs
     }
+
     polish_probabilities(label_probabilities:number[][]):number[][]{
         let aggregate_probabilities:number[] = Array(label_probabilities[0].length);
         for(let i:number = 0; i<this.labels.length; i++){
@@ -107,7 +111,17 @@ let match_manager = new (class {
         }
         return scaled_sort;
     }
-    scrape(): Promise<string[][]>{
+
+    make_choice(matching_results:number[][]):boolean{
+        if(matching_results[0][1]>this.auto_threshold){
+            if(matching_results[0][1]-matching_results[1][1]>this.auto_threshold/2){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    scrape():Promise<string[][]>{
         return new Promise<string[][]>((resolve, reject) => {
             const path_to_csv:string  = this.get_csv_path();
             let results:string[][] = []
@@ -125,6 +139,7 @@ let match_manager = new (class {
             });
         });
     }
+
     get_csv_path(): string{
         let path_to_csv = glob.sync('../*.csv');
         if(path_to_csv){
@@ -134,7 +149,8 @@ let match_manager = new (class {
             return path_to_csv[0];
         }
         throw new Error('No csv file detected');
-    }   
+    }  
+
     normalize_parameter_weights():void{
         let sum:number = 0;
         this.params.forEach((item) => {

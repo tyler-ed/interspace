@@ -33,7 +33,7 @@ function string_comparison(s1:string, s2:string): number{
 function get_dists(test: string, res: string[][], index: string): number[]{
     const dist:number[] = [];
     res.forEach(element => dist.push(string_comparison(test, element[index])));
-    return dist
+    return dist;
 }
 
 export {get_dists, argsort}

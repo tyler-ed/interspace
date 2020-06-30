@@ -7,8 +7,8 @@ Test and Troubleshoot algorithm
 build onto electron
 */
 // EDIT THIS
-const man_test = "olympus"
-const mod_test = "v60"
+const man_test = "Fresenius"
+const mod_test = "millenium hx"
 ///////
 
 import {match_manager, Parameter} from "./manager";
