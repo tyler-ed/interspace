@@ -12,14 +12,16 @@ let match_manager = new (class {
     last_input:string[]
     matching_results:number[][]
 
-    //settings
+    //Settings:
+    //Auto Match Selection:
     auto_choice:boolean = true
     auto_threshold:number = .5
+    //Adaptive Match Displaying
     adaptive_listing:boolean = true
     adaptive_threshold:number = .2
-    display_num:number = 5
-    worthy_size:number = 12
-    softmax_beta:number = 3
+    display_num:number = 5 //Number of matches to display
+    worthy_size:number = 12 //Number of matches considered plausible
+    softmax_beta:number = 3 //Higher, more confident guesses - Lower, less confident guesses
     
     constructor() {
         if(this.display_num+1>this.worthy_size){
@@ -49,7 +51,7 @@ let match_manager = new (class {
         this.normalize_parameter_weights();
         this.initiated = true;
     }
-    
+
     log_results():void{
         console.log('\n', 'Guesses:');
         for(let i:number = 0; i<this.display_num; i++){
@@ -102,6 +104,7 @@ let match_manager = new (class {
                 aggregate_probabilities[i] *= item[i];
             })
         }
+        
         let argsorted_by_probs:number[] = argsort(aggregate_probabilities);
         let prob_sum:number = 0;
         for(let i:number = 0; i<this.worthy_size; i++){

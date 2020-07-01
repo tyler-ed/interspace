@@ -4,8 +4,8 @@ To Do:
 build onto electron
 */
 // EDIT THIS
-const man_test = "Fresenius"
-const mod_test = "millenium hx"
+const man_test = "Abbott"
+const mod_test = "Stat"
 ///////
 
 import {match_manager, Parameter} from "./manager";
